@@ -1,0 +1,8 @@
+import re
+import pandas
+
+URLlessString1 = re.sub(r'http\S+', '', string)
+URLlessString2 = re.sub(r"www.\S+", '', URLlessString1)
+URLlessString3 = re.sub(r"@\S+", '[USER]', URLlessString2)
+
+print(URLlessString3)
