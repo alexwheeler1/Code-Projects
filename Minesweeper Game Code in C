@@ -1,0 +1,252 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char gameGrid[10][10]; //Initialize the array that will hold the mines and adjacent mine values
+char hiddenGrid[10][10]; //Initialize the array that shows the user all '*' until they check or flag a value
+
+//Initialize all functions used
+void printGrid ();
+float check(int row, int col);
+float flag(int row, int col);
+float checkWin();
+
+int main() {
+    srand(2); //Seed the rand function
+
+    //Initialize variables for the random values
+    int row;
+    int column;
+
+    //Use a for loop to randomly place the mines in the gameGrid
+    for(int i=0; i<=10; i++) {
+        row = rand() % 10 + 0;
+        column = rand() % 10 + 0;
+
+        if (gameGrid[row][column] != 'M') {
+            gameGrid[row][column] = 'M';
+        }
+        for (int j = 0; j <= 10; j++) {
+            if (gameGrid[i][j] != 'M') {
+                gameGrid[i][j] = '0';
+            }
+        }
+        }
+
+    //Use a for loop to make all indexes of the hiddenGrid = '*'
+    for(int i=0; i<=10; i++){
+        for (int j =0; j<=10; j++){
+            hiddenGrid[i][j]='*';
+        }
+    }
+
+    //Use a double for loop to check each value of the gameGrid to see if is adjacent to a mine, and if it is
+    //add 1 to the counter 'c' so that the value of that index in the gameGrid becomes the number of adjacent mines it has
+    for(int i =0; i<=9; i++){
+        for(int j=0; j<=9; j++){
+            if(gameGrid[i][j]!='M'){
+               char c='0';
+
+                if(gameGrid[i-1][j-1]== 'M' && i>0 && j>0){
+                    c++;
+                }
+                if(gameGrid[i][j-1]== 'M'&& i>=0 && j>0){
+                    c++;
+                }
+                if(gameGrid[i+1][j-1]== 'M' && i>=0 && j>0 && i<9){
+                    c++;
+                }
+                if(gameGrid[i-1][j]== 'M'&& i>0 && j>=0){
+                    c++;
+                }
+                if(gameGrid[i-1][j+1]== 'M'&& i>0 && j>=0 && j<9){
+                    c++;
+                }
+                if(gameGrid[i][j+1]== 'M'&& i>=0 && j>=0 && j<9){
+                    c++;
+                }
+                if(gameGrid[i+1][j]== 'M'&& i>=0 && j>=0 && i<9){
+                    c++;
+                }
+                if(gameGrid[i+1][j+1]== 'M'&& i>=0 && j>=0 && i<9 && j<9){
+                    c++;
+                }
+                gameGrid[i][j] = c;
+            }}
+        }
+    //Print the starting hiddenGrid
+    printGrid();
+    //Initialize additional variables
+    char function;
+    int inputRow;
+    int col;
+
+    //Run an infinite while loop to continue prompting the user to make a game move until the user either wins or loses
+    while(1) {
+        //Prompt the user to make either a check or flag
+        printf("Enter 'c' for check cell, 'f' for flag cell\nEnter commend & cell row col:\n");
+        scanf(" %c %d %d", &function, &inputRow, &col);
+        //Code to run if the user flags an index
+        if (function == 'f') {
+            flag(inputRow, col);
+            printGrid();
+            checkWin();
+            if (checkWin()==1){
+                printf("Congratulations! You win!");
+                break;
+            }
+        }
+        //Code to run if the user checks an index
+        if (function == 'c') {
+            check(inputRow, col);
+            printGrid();
+            if (check(inputRow, col) == 0) {
+                printf("You hit a mine, game over");
+                break;
+            }
+            checkWin();
+            if (checkWin()==1){
+                printf("Congratulations! You win!");
+                break;
+            }
+        }
+    }
+    }
+//Function that prints the hiddenGrid to the user
+void printGrid() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+                if (j == 9) {
+                    printf("%c  \n", hiddenGrid[i][j]);
+                } else {
+                    printf("%c  ", hiddenGrid[i][j]);
+                }
+            }
+        }
+    }
+
+//Function that performs a check on the index the user selects
+float check(int row, int col) {
+    //If the user checks a mine the function returns 0 and the game is over
+    if (gameGrid[row][col] == 'M') {
+        hiddenGrid[row][col] = gameGrid[row][col];
+        return 0;
+    }
+    //If the user checks an index of a number above zero, it reveals that index
+    if (gameGrid[row][col] > '0') {
+        hiddenGrid[row][col] = gameGrid[row][col];
+        return 1;
+    }
+    //If the user checks an index with the value 0, it will reveal all the 0s around it as well as any values greater than 0 touching the 0s
+    if (gameGrid[row][col] == '0' && row > 0 && col > 0 && row < 9 && col < 9 && hiddenGrid[row][col] != gameGrid[row][col]) {
+        hiddenGrid[row][col] = gameGrid[row][col];
+        //The check function calls on itself to check the indexes adjacent to the original 0
+        check(row - 1, col - 1);
+        check(row - 1, col);
+        check(row - 1, col + 1);
+        check(row, col - 1);
+        check(row, col + 1);
+        check(row + 1, col - 1);
+        check(row + 1, col);
+        check(row + 1, col + 1);
+    }
+    //Additional code for special check cases in which indexes are on the edges of the grid
+    if((gameGrid[row][col] == '0' && row == 0 || col == 0 || row == 9 || col ==9 && hiddenGrid[row][col] != gameGrid[row][col])){
+        if(gameGrid[row][col] == '0' && row == 0 /*|| col ==0*/ && hiddenGrid[row][col] != gameGrid[row][col]){
+            if (col == 0){
+                hiddenGrid[row][col] = gameGrid[row][col];
+                check(row + 1, col + 1);
+                check(row + 1, col);
+                check(row, col + 1);
+            }
+            if (col == 9){ //forces row to be 0
+                hiddenGrid[row][col] = gameGrid[row][col];
+                check(row + 1, col - 1);
+                check(row + 1, col);
+                check(row, col - 1);
+            }
+            if(col>0 && col<9){
+                if (gameGrid[row][col] == '0') {
+                    hiddenGrid[row][col] = gameGrid[row][col];
+                    check(row, col + 1);
+                    check(row + 1, col + 1);
+                    check(row + 1, col);
+                    check(row + 1, col - 1);
+                    check(row, col - 1);
+                }
+            }
+        }
+        if(gameGrid[row][col] == '0'&& /*row == 0||*/ col ==0 && hiddenGrid[row][col] != gameGrid[row][col]){
+            if(row>0 && row<9){
+                if (gameGrid[row][col] == '0') {
+                    hiddenGrid[row][col] = gameGrid[row][col];
+                    check(row - 1, col + 1);
+                    check(row, col + 1);
+                    check(row - 1, col);
+                    check(row + 1, col + 1);
+                    check(row + 1, col);
+                }
+            }
+        }
+        if(gameGrid[row][col] == '0' && row == 9 /*|| col ==9*/ && hiddenGrid[row][col] != gameGrid[row][col]){
+            if (col == 9){
+                hiddenGrid[row][col] = gameGrid[row][col];
+                check(row - 1, col - 1);
+                check(row - 1, col);
+                check(row, col - 1);
+            }
+            if (col == 0){ //forces row to be 9
+                hiddenGrid[row][col] = gameGrid[row][col];
+                check(row - 1, col + 1);
+                check(row - 1, col);
+                check(row, col + 1);
+            }
+            if (col>0 && col<9){
+                if (gameGrid[row][col] == '0') {
+                    hiddenGrid[row][col] = gameGrid[row][col];
+                    check(row - 1, col - 1);
+                    check(row - 1, col);
+                    check(row, col - 1);
+                    check(row + 1, col - 1);
+                    check(row + 1, col);
+                }
+            }
+        }
+        if(gameGrid[row][col] == '0' && /*row == 9 ||*/ col ==9 && hiddenGrid[row][col] != gameGrid[row][col]){
+            if (row>0 && row<9){
+                if (gameGrid[row][col] == '0') {
+                    hiddenGrid[row][col] = gameGrid[row][col];
+                    check(row - 1, col - 1);
+                    check(row - 1, col);
+                    check(row, col - 1);
+                    check(row + 1, col - 1);
+                    check(row + 1, col);
+                }
+            }
+        }
+
+    }
+}
+//Function that 'flags' the index selected by the user by replacing that index's '*' with 'F'
+float flag(int row, int col) {
+        hiddenGrid[row][col] = 'F';
+}
+
+//Function that checks for the win case, which is when all indexes except for the mines have been checked
+float checkWin(){
+    int c = 0;
+    for(int i=0; i<10; i++){
+        for(int j=0; j<10; j++){
+            if(gameGrid[i][j]!='M'&& hiddenGrid[i][j] == gameGrid[i][j]){
+                c = c+1;
+            }
+        }
+    }
+    //When all indexes have been checked it returns 1
+    if (c==90){
+      return 1;
+    }
+    //Before all indexes have been checked it returns 1
+    if (c<90){
+        return 0;
+    }
+}
