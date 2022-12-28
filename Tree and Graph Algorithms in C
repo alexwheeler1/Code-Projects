@@ -1,0 +1,96 @@
+typedef struct AVLTreeNode{
+    int data;
+    int height;
+    struct AVLTreeNode *leftChild;
+    struct AVLTreeNode *rightChild;
+} avltree;
+
+avltree *rotateRight(avltree *y) {
+    avltree *x = y->leftChild;
+    avltree *T2 = x->rightChild;
+
+    x->rightChild = y;
+    y->leftChild = T2;
+
+    y->height = height(y);
+    x->height = height(x);}
+
+avltree *RotateLeft(avltree *node){
+    avltree *x = node->rightChild;
+    avltree *a = x->leftChild;
+
+    x->leftChild = node;
+    node->rightChild = a;
+
+    node->height = height(node);
+    x->height = height(x);}
+    
+  
+  struct Node* AVLinsert(avltree* node, int key){
+    if (node == NULL)
+        return(NewNode(key));
+    if (key < node->data)
+        node->data = insert(node->leftChild, key);
+    else if (key > node->data)
+        node->data = insert(node->rightChild, key);
+    else {
+        return node;}
+
+        node->height = height(node);
+
+        int balance = getBalance(node);}
+
+    if (balance > 1 && key < node->leftChild->data)
+        return RotateRight(node);
+
+    if (balance < -1 && key > node->rightChild->data)
+        return RotateLeft(node);
+
+    if (balance > 1 && key > node->leftChild->data){
+        node->leftChild = RotateLeft(node->leftChild);
+        return RotateRight(node);
+    }
+    if (balance < -1 && key < node->rightChild->data){
+        node->rightChild = RotateRight(node->rightChild);
+        return RotateLeft(node);
+    }
+    return node;}
+
+void create_graph(){
+    int count, max_edge, origin, destin;
+    printf("Enter number of vertices : ");
+    scanf("%d",&n);
+    max_edge = n*(n-1);
+    for(count=1; count<=max_edge; count++)
+    {
+        printf("Enter edge %d( -1 -1 to quit ) : ",count);
+        scanf("%d %d",&origin,&destin);
+        if((origin == -1) && (destin == -1))
+            break;
+        if(origin>=n || destin>=n || origin<0 || destin<0)
+        { printf("Invalid edge!\n");
+            count--; }
+        else
+        { adj[origin][destin] = 1; }
+    }
+   }
+   
+   void GraphBreadthFirstTraversal (int v){
+    int count = 0;
+    int a = v;
+    int i;
+    enqueue(v);
+    state[v]=waiting;
+    while(!isEmpty()){
+        v = dequeue();
+        count ++;
+        state[v]=visited;
+        for(i=0; i<n;i++){
+            if(adj[v][i]==1 && state[i]==initial){
+                enqueue[i];
+                state[i]=waiting;
+            }
+        }
+    }
+}
+
