@@ -1,0 +1,6 @@
+import pandas as pd
+from os import path
+fpath = path.join('data', 'full_dataset', 'goemotions_1.csv')
+df = pd.read_csv(fpath)
+
+print(df.head)
