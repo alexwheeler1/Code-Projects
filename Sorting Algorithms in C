@@ -1,0 +1,66 @@
+void QuickSort(int arr[], int first, int last){
+    int i, j, pivot, temp;
+    if(first<last){
+        i=first;
+        pivot=first;
+        j=last;
+        while(i<j){
+            while(arr[i]=< arr[pivot]&& i<last){
+                i++;
+            }
+            while(arr[j]>arr[pivot]){
+                j--;
+            }
+            temp = arr[i];
+            arr[i]=arr[j];
+            arr[j]=temp;
+        }
+        temp = arr[pivot];
+        arr[pivot] = arr[j];
+        arr[j]=temp;
+        QuickSort(arr, first, j-1);
+        QuickSort(arr, j-1, last);
+    }
+}
+
+void bubbleSort(int arr[], int size){
+    int q, p;
+    for(q=0;q<size-1;q++){
+        for(p=0; p<size-p-1;p++){
+            if(arr[q]<arr[q+1]){
+                swap(&arr[q], arr[q+1]);
+            }
+        }
+    }
+}
+
+void selectionSort(int arr[]){
+    int smallIndex;
+    int pass, j, n = sizeof(arr)/sizeof(arr[0]);
+    int temp;
+
+    for(pass = 0; pass<n-1; pass++){
+        smallIndex=pass;
+        for(j = pass+1;j<n;j++){
+            if(arr[j]<arr[smallIndex]){
+                smallIndex = j;}
+            temp = arr[pass];
+            arr[pass]=arr[smallIndex];
+            arr[smallIndex] = temp;
+        }
+    }
+}
+
+void InsertionSort(int arr[]){
+    int i, j, n=sizeof(arr)/sizeof(arr[0]);
+    int target;
+    for(i=1;i<n;i++){
+        j= i;
+        target=arr[i];
+        while(j>0&&target<arr[j-1]){
+            arr[j]=arr[j-1];
+            j--;
+        }
+        arr[j]=target;
+    }
+}
