@@ -1,0 +1,133 @@
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Lab3 {
+  
+  public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  public static final int ALPHABET_LEN = ALPHABET.length();
+  
+  public static String shift(int n) {
+		n = n % ALPHABET_LEN;
+		
+		if(n>=0) {
+			String firstHalf = ALPHABET.substring(ALPHABET_LEN - n);
+			String secondHalf = ALPHABET.substring(0, ALPHABET_LEN - n);
+			
+			return firstHalf + secondHalf;}
+      
+		else{
+			n=-n;
+			String firstHalf = ALPHABET.substring(n, ALPHABET_LEN);
+			String secondHalf = ALPHABET.substring(0,n);
+	
+			return firstHalf + secondHalf;}
+  }
+  
+  public static String encrypt(String msg, String cipherAlphabet) {
+	
+		char[] msgChars = msg.toCharArray();
+		
+		for(int i=0; i<msg.length(); i++) {
+			if(cipherAlphabet.indexOf(msg.charAt(i)) == -1) {
+				msgChars[i] = '?';}
+        
+			else {
+				int j = ALPHABET.indexOf(msg.charAt(i));
+				msgChars[i] = cipherAlphabet.charAt(j);}
+		}
+		String message = new String(msgChars);
+		return message;
+	}
+  
+  public static String decrypt(String msg, String cipherAlphabet) {
+		String decrypt = "";
+		
+		for(int i=0; i<msg.length(); i++) {
+			if(ALPHABET.indexOf(msg.charAt(i)) == -1) {
+				decrypt = decrypt + '?';
+			}
+			else {
+				int j = cipherAlphabet.indexOf(msg.charAt(i));
+				decrypt = decrypt + ALPHABET.charAt(j);
+			}
+		}
+		return decrypt;
+	}
+  
+  public static String read(String filename) {
+		try {
+			Path path = FileSystems.getDefault().getPath("text", filename);
+			List<String> lines = Files.readAllLines(path);
+			// your code starts here
+			String read = String.join("", lines);
+			return read;
+			// your code ends
+		} catch (Exception ex) {
+			// some sort of error occurred while reading the file
+			ex.printStackTrace();
+			System.exit(1);
+		}
+		return null;
+	}
+  
+  public static int freq(char c, String msg) {
+        int count = 0;
+        for(int i = 0; i<msg.length(); i++) {
+        	if(msg.charAt(i)==c || msg.charAt(i)==(c+32)) {
+        		count++;
+        	}
+        }
+        return count;
+	}
+  
+  public static char mostCommon(String msg) {
+		int counter = 0;
+		int[] charC = new int[Character.MAX_VALUE + 1];
+		char mostCommon = ' ';
+		for (int i = 0 ; i <ALPHABET.length() ; i++){
+			int ch = Lab3.freq(ALPHABET.charAt(i), msg);
+		    if (ch >= counter){
+		        counter = ch;
+		        mostCommon = ALPHABET.charAt(i);
+		    } 
+		}
+		return mostCommon;
+	}
+  
+  public static ArrayList<String> analyze(String msg) {
+		ArrayList<String> decrypt = new ArrayList<>();
+		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('E')-ALPHABET.indexOf(mostCommon(msg)))));
+		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('A')-ALPHABET.indexOf(mostCommon(msg)))));
+		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('T')-ALPHABET.indexOf(mostCommon(msg)))));
+		
+		return decrypt;}
+
+}
+
+public class TestEncryptDecrypt {
+
+	public static void main(String[] args) {
+		String shifted = Lab3.shift(5);
+		String msg = "Oil thigh na Banrighinn a'Banrighinn gu brath!".toUpperCase();
+		System.out.println("Original message:");
+		System.out.println(msg);
+		System.out.println();
+		
+		String enc = Lab3.encrypt(msg, shifted);
+		System.out.println("Encrypted message:");
+		System.out.println(enc);
+		System.out.println();
+		
+		String dec = Lab3.decrypt(enc, shifted);
+		System.out.println("Decrypted message:");
+		System.out.println(dec);
+		System.out.println();
+	}
+
+}
+  
+  
+  
