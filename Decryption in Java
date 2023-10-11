@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Lab3 {
+public class Decrypt {
   
   public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   public static final int ALPHABET_LEN = ALPHABET.length();
@@ -88,7 +88,7 @@ public class Lab3 {
 		int[] charC = new int[Character.MAX_VALUE + 1];
 		char mostCommon = ' ';
 		for (int i = 0 ; i <ALPHABET.length() ; i++){
-			int ch = Lab3.freq(ALPHABET.charAt(i), msg);
+			int ch = Decrypt.freq(ALPHABET.charAt(i), msg);
 		    if (ch >= counter){
 		        counter = ch;
 		        mostCommon = ALPHABET.charAt(i);
@@ -99,9 +99,9 @@ public class Lab3 {
   
   public static ArrayList<String> analyze(String msg) {
 		ArrayList<String> decrypt = new ArrayList<>();
-		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('E')-ALPHABET.indexOf(mostCommon(msg)))));
-		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('A')-ALPHABET.indexOf(mostCommon(msg)))));
-		decrypt.add(Lab3.decrypt(msg, shift(ALPHABET.indexOf('T')-ALPHABET.indexOf(mostCommon(msg)))));
+		decrypt.add(Decrypt.decrypt(msg, shift(ALPHABET.indexOf('E')-ALPHABET.indexOf(mostCommon(msg)))));
+		decrypt.add(Decrypt.decrypt(msg, shift(ALPHABET.indexOf('A')-ALPHABET.indexOf(mostCommon(msg)))));
+		decrypt.add(Decrypt.decrypt(msg, shift(ALPHABET.indexOf('T')-ALPHABET.indexOf(mostCommon(msg)))));
 		
 		return decrypt;}
 
@@ -110,18 +110,18 @@ public class Lab3 {
 public class TestEncryptDecrypt {
 
 	public static void main(String[] args) {
-		String shifted = Lab3.shift(5);
+		String shifted = Decrypt.shift(5);
 		String msg = "Oil thigh na Banrighinn a'Banrighinn gu brath!".toUpperCase();
 		System.out.println("Original message:");
 		System.out.println(msg);
 		System.out.println();
 		
-		String enc = Lab3.encrypt(msg, shifted);
+		String enc = Decrypt.encrypt(msg, shifted);
 		System.out.println("Encrypted message:");
 		System.out.println(enc);
 		System.out.println();
 		
-		String dec = Lab3.decrypt(enc, shifted);
+		String dec = Decrypt.decrypt(enc, shifted);
 		System.out.println("Decrypted message:");
 		System.out.println(dec);
 		System.out.println();
