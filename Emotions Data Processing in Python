@@ -1,0 +1,90 @@
+# region import
+import spacy
+import pandas as pd
+import re
+import numpy as np
+import fasttext
+# endregion import 
+
+
+# 1. Removing URLs
+def remove_url(doc):
+    for text in  doc['text']:
+        text = re.sub(r'http\S+', '', text)
+        text = re.sub(r"www.\S+", '', text)
+        text = re.sub(r"@\S+", '[USER]', text)
+
+
+# 2. Removing irrelevant punctuation
+# Add other punctuation if need be by looking at the data
+def remove_punct(doc):
+    target_str = doc['text']
+    
+    # inside [] are characters to remove / sub in a regular expression
+    punct_regex = r"[<>’‘–—~|“”…`_.$()*%@]"
+    # special_chars_regex = r"[â€™]"
+    
+    # re.sub(pattern, repl, string)
+    # returns the string obtained by replacing the pattern occurrences
+    for n in range(target_str):
+        removed_punct = re.sub(punct_regex, "", target_str.iloc[n])
+        # sub special_chars with ' to get final result
+        result = re.sub("â€™", "'", removed_punct)
+
+
+# 3. Removing stopwords
+# Use spaCy
+def remove_stop(doc):
+    doc["text"] = doc["text"].str.split()
+    doc["text"] = doc['text'].apply(lambda x: [item for item in x if item.lower() not in all_stopwords])
+
+
+# Initialization 
+def main():
+    nlp = spacy.load('en_core_web_sm') # Loads the 'small' english vocabulary downloaded using command above
+    doc =  pd.read_csv('goemotions_full.csv') # Opens dataset file
+    all_stopwords = nlp.Defaults.stop_words # Loads all stopwords
+
+    # matrix of emotion values
+    emotions_df = doc.iloc[:, 9:37]
+    emotions_array = emotions_df.to_numpy()
+
+    # look at 2d array
+    print(emotions_array)
+
+    # preproccessing
+    
+    # we need to fix remove_punct, remove_stop
+    remove_url(doc)
+
+    remove_punct(doc)
+    # remove_stop(doc)
+    
+    # pre-process data into form: __label__<label value><space><associated datapoint>
+    all_texts = doc['text'].tolist()
+    print(all_texts[0])
+
+    # text_em = doc.columns[:, 9:37]
+
+    # print(text_em)
+    
+    # drug type
+
+    # all_labels = doc['drug type'].tolist()
+    # prep_datapoints=[]
+    # for i in range(len(all_texts)):
+    #     sample = '__label__'+ str(all_labels[i]) + ' '+ all_texts[i]
+    #     prep_datapoints.append(sample)
+
+    # make randomized train-test split
+
+    # write pre-processed training data to a file
+
+    # fasttext model takes .txt file as parameter
+
+    # model = fasttext.train_supervised('train.txt')
+
+    # use model.predict(text) to get prediction for specific input
+
+
+main()
