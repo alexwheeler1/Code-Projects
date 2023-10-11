@@ -1,0 +1,41 @@
+/*
+ * insultgenerator_20alw6.h
+ *
+ *  Created on: Sep. 23, 2023
+ *      Author: alexandra wheeler
+ */
+
+//Include useful libraries
+#include <vector>
+#include <exception>
+#pragma once //To fix an issue where .cpp file said it was declaring the methods first
+
+using namespace std;
+
+class InsultGenerator {
+	public: //Create required methods
+		void initialize();
+		string talkToMe();
+		vector<string> generate(int num);
+		void generateAndSave(const string& fileName, const int& numInsults);
+	private: //Create variables for use in implementation
+		vector<string> first;
+		vector<string> second;
+		vector<string> third;
+};
+
+class FileException{ //Exception for when the file cannot be opened
+	private:
+		string exception; //Exception message that gets printed
+	public:
+		FileException(string exception);
+		string& what();
+};
+
+class NumInsultsOutOfBounds{ //Exception for when the requested number is out of bounds
+	private:
+		string exception; //Exception message that gets printed
+	public:
+		NumInsultsOutOfBounds(string exception);
+		string& what();
+};
